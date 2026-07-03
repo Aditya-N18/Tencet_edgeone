@@ -28,5 +28,5 @@ export function visionOfflineMessage() {
 }
 
 export function visionDeployNotice() {
-  return 'Camera and fall detection run on the in-room tablet (edge AI). This web app handles voice check-ins and family alerts via the cloud.'
+  return 'Camera and fall detection run on the in-room tablet (edge AI). This site handles voice check-ins and family alerts via Butterbase and Vapi.'
 }
