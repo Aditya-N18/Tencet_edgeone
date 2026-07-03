@@ -16,7 +16,10 @@ export function VoiceSessionProvider({ children }) {
   const { isConfigured, sessionActive, startSession } = session
 
   useEffect(() => {
+    // Auto-start voice only when a fall incident arrives (never on page load / manual).
     if (!activeIncident || !isConfigured || sessionActive) return
+    if (activeIncident.status !== 'fall_detected') return
+    if (activeIncident.event_type === 'manual_checkin') return
     if (startedForRef.current === activeIncident.id) return
 
     startedForRef.current = activeIncident.id

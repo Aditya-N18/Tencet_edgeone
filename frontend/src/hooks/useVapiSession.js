@@ -111,6 +111,14 @@ export function useVapiSession({ incident, onCallEnd } = {}) {
       }
 
       const active = incidentOverride ?? incident
+      // Voice only starts for a real fall incident — never manual / wellness-only sessions.
+      if (
+        !active?.id ||
+        active.status !== "fall_detected" ||
+        active.event_type === "manual_checkin"
+      ) {
+        return false
+      }
 
       try {
         const vapi = await getVapiClient();
@@ -118,10 +126,10 @@ export function useVapiSession({ incident, onCallEnd } = {}) {
 
         const variableValues = {
           senior_name: "Margaret",
-          senior_id: active?.senior_id || "senior_001",
-          incident_id: active?.id || "manual-session",
-          alert_reason: active?.reason || "wellness check",
-          confidence: String(active?.confidence ?? "0"),
+          senior_id: active.senior_id || "senior_001",
+          incident_id: active.id,
+          alert_reason: active.reason || "fall detected",
+          confidence: String(active.confidence ?? "0"),
         };
 
         await vapi.start(assistantId, { variableValues });

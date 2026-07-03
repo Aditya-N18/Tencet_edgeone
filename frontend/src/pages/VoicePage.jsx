@@ -1,4 +1,5 @@
 import { Mic, MicOff, Phone, Volume2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -14,18 +15,12 @@ export default function VoicePage() {
   const { activeIncident, clearIncident } = useIncident()
   const { monitoring } = useBackendStatus()
   const {
-    isConfigured,
     sessionActive,
     listening,
     transcript,
     error,
-    startSession,
     endSession,
   } = useVoiceSession()
-
-  const handleStart = async () => {
-    await startSession(activeIncident)
-  }
 
   const handleEnd = async () => {
     await endSession()
@@ -42,7 +37,7 @@ export default function VoicePage() {
         <p className="mx-auto mt-3 max-w-xl text-elder-base text-muted-foreground">
           {activeIncident || sessionActive
             ? 'We noticed a possible fall. Speak naturally — your safety companion will guide you.'
-            : 'Speak naturally, or wait — voice help also starts automatically when a fall is detected.'}
+            : 'Voice help starts only when a fall is detected while monitoring is on.'}
         </p>
         {activeIncident && (
           <Badge variant="warning" className="mt-4">
@@ -95,7 +90,7 @@ export default function VoicePage() {
                   : 'Thinking…'
                 : activeIncident
                   ? 'Starting voice check-in…'
-                  : 'Ready when you are'}
+                  : 'Waiting for a fall alert'}
             </CardTitle>
             <CardDescription>
               {sessionActive && lastAssistantLine && (
@@ -105,7 +100,7 @@ export default function VoicePage() {
               )}
               {!sessionActive && !activeIncident && (
                 <span className="block mt-4 text-elder-base">
-                  Tap Start talking below, or go to Monitor — voice help begins automatically if a fall is detected.
+                  Go to Monitor and press Start monitoring. Voice help begins automatically only if a fall is detected.
                 </span>
               )}
             </CardDescription>
@@ -120,9 +115,8 @@ export default function VoicePage() {
             ) : activeIncident ? (
               <Badge variant="warning">Connecting voice companion…</Badge>
             ) : (
-              <Button size="xl" onClick={handleStart} className="w-full max-w-md" disabled={!isConfigured}>
-                <Mic className="h-7 w-7" />
-                Start talking
+              <Button asChild size="xl" variant="outline" className="w-full max-w-md">
+                <Link to="/monitor">Go to Monitor</Link>
               </Button>
             )}
 

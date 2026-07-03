@@ -9,17 +9,17 @@ const features = [
   {
     icon: Shield,
     title: 'Gentle monitoring',
-    description: 'Cameras watch quietly. We only speak up when something may need attention.',
+    description: 'Press Start monitoring to turn the camera on. We only speak up when a fall may need attention.',
   },
   {
     icon: Mic,
-    title: 'Voice help nearby',
-    description: 'Tap to talk anytime, or let a calm voice start automatically if a fall is detected.',
+    title: 'Voice help on fall',
+    description: 'If a fall is detected, a calm voice starts automatically — no button to press.',
   },
   {
     icon: Users,
     title: 'Family stays informed',
-    description: 'Loved ones receive updates when you want help or when you say you are okay.',
+    description: 'Loved ones can be called when you want help or when you say you are okay.',
   },
 ]
 
@@ -45,7 +45,7 @@ export default function HomePage() {
           <Button asChild variant="outline" size="xl">
             <Link to="/voice">
               <Mic className="h-6 w-6" />
-              Talk to helper
+              Voice help status
             </Link>
           </Button>
         </div>
@@ -70,19 +70,14 @@ export default function HomePage() {
       <GlowingCard glowColor="sky">
         <Card>
           <CardHeader>
-            <CardTitle>Need help right now?</CardTitle>
+            <CardTitle>How it works</CardTitle>
             <CardDescription>
-              Press the button below to talk to your safety companion, or start monitoring for automatic fall alerts.
+              Start monitoring on the Monitor page. The camera turns on only when you press Start.
+              Voice help begins automatically only if a fall is detected.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4 sm:flex-row">
+          <CardContent>
             <Button asChild size="xl" className="w-full sm:w-auto">
-              <Link to="/voice">
-                <Mic className="h-6 w-6" />
-                Start voice session
-              </Link>
-            </Button>
-            <Button asChild size="xl" variant="outline" className="w-full sm:w-auto">
               <Link to="/monitor">
                 <Shield className="h-6 w-6" />
                 Go to monitor
