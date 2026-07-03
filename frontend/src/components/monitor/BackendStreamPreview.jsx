@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { isVisionBackendExpected, visionBackendUrl, visionOfflineMessage } from '@/lib/visionBackend'
+import {
+  isVisionBackendExpected,
+  visionBackendUrl,
+  visionFetchHeaders,
+  visionOfflineMessage,
+} from '@/lib/visionBackend'
 
 export function BackendStreamPreview({ streaming, className }) {
   const [frameUrl, setFrameUrl] = useState(null)
@@ -21,6 +26,7 @@ export function BackendStreamPreview({ streaming, className }) {
       try {
         const res = await fetch(`${backendUrl}/frame/latest?t=${Date.now()}`, {
           cache: 'no-store',
+          headers: visionFetchHeaders(),
         })
         if (cancelled) return
         if (res.status === 204) return

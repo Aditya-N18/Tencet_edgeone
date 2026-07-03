@@ -12,6 +12,7 @@ import { useVoiceSession } from '@/context/VoiceSessionContext'
 import {
   visionApiBase,
   visionDeployNotice,
+  visionFetchHeaders,
   visionOfflineMessage,
 } from '@/lib/visionBackend'
 
@@ -62,7 +63,10 @@ export default function MonitorPage() {
     setStarting(true)
     setActionError(null)
     try {
-      const res = await fetch(`${API_BASE}/pipeline/start`, { method: 'POST' })
+      const res = await fetch(`${API_BASE}/pipeline/start`, {
+        method: 'POST',
+        headers: visionFetchHeaders(),
+      })
       const data = await res.json()
       if (!res.ok) {
         throw new Error(data.reason || 'Could not start monitoring')
@@ -101,7 +105,10 @@ export default function MonitorPage() {
     monitoringRef.current = false
 
     try {
-      const res = await fetch(`${API_BASE}/pipeline/stop`, { method: 'POST' })
+      const res = await fetch(`${API_BASE}/pipeline/stop`, {
+        method: 'POST',
+        headers: visionFetchHeaders(),
+      })
       if (!res.ok) throw new Error('Could not stop monitoring')
       await refresh()
     } catch (err) {

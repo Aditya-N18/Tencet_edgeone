@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import {
   isVisionBackendExpected,
   visionApiBase,
+  visionFetchHeaders,
 } from '@/lib/visionBackend'
 
 const POLL_MS = 8000
@@ -27,7 +28,9 @@ export function BackendStatusProvider({ children }) {
       return null
     }
     try {
-      const res = await fetch(`${apiBase}/health`)
+      const res = await fetch(`${apiBase}/health`, {
+        headers: visionFetchHeaders(),
+      })
       if (!res.ok) throw new Error(`Health check failed (${res.status})`)
       const data = await res.json()
       setStatus(data)

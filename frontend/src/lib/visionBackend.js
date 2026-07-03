@@ -1,28 +1,48 @@
-/** Vision (YOLO + camera) runs on the edge tablet, not on butterbase.dev. */
+/** Vision (YOLO + camera) runs on the edge tablet; may be exposed via tunnel for hosted UI. */
 
-export function isLocalVisionHost() {
+function isLocalVisionHost() {
   if (typeof window === 'undefined') return false
   const host = window.location.hostname
   return host === 'localhost' || host === '127.0.0.1'
 }
 
+function stripSlash(url) {
+  return String(url || '').replace(/\/$/, '')
+}
+
+/** Public tunnel or explicit backend URL (baked at build time for EdgeOne). */
 export function visionBackendUrl() {
-  return import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8080'
+  const fromEnv = stripSlash(import.meta.env.VITE_BACKEND_URL)
+  if (fromEnv) return fromEnv
+  if (isLocalVisionHost()) return 'http://127.0.0.1:8080'
+  return ''
 }
 
 export function visionApiBase() {
-  return import.meta.env.VITE_API_URL || '/api'
+  const fromEnv = stripSlash(import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL)
+  if (fromEnv) return fromEnv
+  if (isLocalVisionHost()) return '/api'
+  return ''
 }
 
 /** True when this browser session can talk to the edge vision service. */
 export function isVisionBackendExpected() {
-  if (import.meta.env.VITE_BACKEND_URL) return true
-  return isLocalVisionHost()
+  return Boolean(visionBackendUrl() || visionApiBase())
+}
+
+/** Headers required by ngrok free tier (skip browser warning interstitial). */
+export function visionFetchHeaders(extra = {}) {
+  const url = visionBackendUrl() || visionApiBase()
+  const headers = { ...extra }
+  if (url.includes('ngrok')) {
+    headers['ngrok-skip-browser-warning'] = 'true'
+  }
+  return headers
 }
 
 export function visionOfflineMessage() {
   if (isVisionBackendExpected()) {
-    return 'Vision service offline — run .\\restart-backend.ps1 in the backend folder.'
+    return 'Vision service offline — start the backend on the tablet (restart-backend.ps1) and keep the tunnel running.'
   }
   return 'Room monitoring runs on the home tablet. Voice help and fall alerts work here; start the vision service on the tablet to enable the camera.'
 }
