@@ -7,16 +7,7 @@ from capture.video_source import CameraSource
 from config.settings import settings
 from pipeline.frame_buffer import clear_latest_frame
 from pipeline.runner import DetectionPipeline
-
-try:
-    from api.server import set_model_ready, update_pipeline_status
-except ImportError:
-
-    def set_model_ready(ready: bool = True) -> None:
-        pass
-
-    def update_pipeline_status(running, frames, last_event, *, model_ready=None):
-        pass
+from pipeline.status_store import set_model_ready, update_pipeline_status
 
 
 _lock = threading.Lock()

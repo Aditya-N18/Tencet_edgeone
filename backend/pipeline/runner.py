@@ -5,6 +5,7 @@ Decision: synchronous loop for clarity on edge devices.
 Async webhook sends can be added later; sync is fine for MVP volume.
 """
 
+import threading
 import time
 from typing import Optional
 
@@ -13,15 +14,7 @@ from config.settings import settings
 from detection.inference import InferenceEngine
 from pipeline.alert_manager import AlertManager
 from pipeline.frame_buffer import set_latest_frame
-
-try:
-    from api.server import set_model_ready, update_pipeline_status
-except ImportError:
-    def set_model_ready(ready: bool = True) -> None:
-        pass
-
-    def update_pipeline_status(running, frames, last_event, *, model_ready=None):
-        pass
+from pipeline.status_store import set_model_ready, update_pipeline_status
 
 
 class DetectionPipeline:
@@ -84,7 +77,12 @@ class DetectionPipeline:
                 payload = self.alerts.evaluate(event, frame)
                 if payload:
                     print(f"[Pipeline] ALERT triggered: {payload}")
-                    self.alerts.send_alert_sync(payload)
+                    # Don't block the camera loop on Butterbase HTTP
+                    threading.Thread(
+                        target=self.alerts.send_alert_sync,
+                        args=(payload,),
+                        daemon=True,
+                    ).start()
 
                 if max_frames is not None and self.frames_processed >= max_frames:
                     break

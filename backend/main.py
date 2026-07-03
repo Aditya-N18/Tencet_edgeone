@@ -14,7 +14,8 @@ import threading
 
 import uvicorn
 
-from api.server import app, update_pipeline_status
+from api.server import app
+from pipeline.status_store import update_pipeline_status
 from capture.video_source import CameraSource, FileSource
 from config.settings import settings
 from pipeline.runner import DetectionPipeline
