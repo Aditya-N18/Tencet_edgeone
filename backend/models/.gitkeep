@@ -1,0 +1,2 @@
+# Place custom YOLO weights here (e.g. fall_detection_v1.pt)
+# Official weights auto-download on first run if not present.

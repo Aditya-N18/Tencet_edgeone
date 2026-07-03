@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+frontend.zip
+*.zip
+
+# Python
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/data/snapshots/*.jpg
+backend/models/*.pt
+backend/*.pt
+!backend/models/.gitkeep
